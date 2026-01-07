@@ -44,8 +44,13 @@ app.get('/showrooms/:pin', (req, res) => {
     const filteredShowrooms = showrooms.filter(showroom => showroom.pincode === pin);
     
     // Always return a JSON array, even if empty
-    res.json(filteredShowrooms);
+    res.send(formatShowroomNames(filteredShowrooms));
 });
+
+// Wrapper function to format showroom names
+function formatShowroomNames(showroomsList) {
+    return showroomsList.map(showroom => showroom.name).join(', ');
+}
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
