@@ -86,8 +86,8 @@ app.post('/compare-dates', (req, res) => {
 
 // API to check home test availability for a given pincode
 // Returns 1 if home test is available, 0 if not available
-app.get('/check_home_test', (req, res) => {
-    const pincode = req.query.pincode;
+app.get('/check_home_test/:pin', (req, res) => {
+    const pincode = req.params.pin;
     
     if (!pincode) {
         return res.status(400).json({ error: 'Pincode is required as query parameter' });
