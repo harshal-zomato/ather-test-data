@@ -81,13 +81,20 @@ say:
 after saying the above, STRICTLY GO TO STEP 2.
 
 STEP 6: FETCHING SHOWROOM LOCATIONS
-[ tool call ] call tool: get_showroom_locations( insert the value of {{.user_pincode}} in this function)
+[ tool call ] call tool: `get_showroom_locations`( insert the value of {{.user_pincode}} in this function)
 if tool call successful: STRICTLY GO TO STEP 6.1.
 if tool call fails: STRICTLY GO TO STEP 6.2.
 
 	STEP 6.1: VALIDATING SHOWROOM DATA
 	if {{.available_showrooms}} is empty: STRICTLY GO TO STEP 6.2.
-	if {{.available_showrooms}} has a value: STRICTLY GO TO STEP 7.
+	if {{.available_showrooms}} has a value:
+		MANDATORY CHECK (DO NOT SKIP): You MUST check if {{.available_showrooms}} contains "home_test" or any similar home test option.
+		This check is MANDATORY before proceeding to any next step.
+		Perform the check:
+			IF {{.available_showrooms}} contains "home_test" (or "home test" or "home_delivery" or similar): STRICTLY GO TO STEP 7.2.
+			IF {{.available_showrooms}} does NOT contain any home test option: STRICTLY GO TO STEP 7.
+		
+		NOTE: DO NOT go directly to STEP 7 without performing this mandatory home_test check.
 
 	STEP 6.2: HANDLING NO SHOWROOMS FOUND
 	say:
@@ -104,11 +111,19 @@ if tool call fails: STRICTLY GO TO STEP 6.2.
 	if the user still does not provide a pincode: STRICTLY GO TO STEP 6.3.
 
 STEP 7: SHOWROOM SELECTION
+[Note: This step shows only physical showroom locations. Home test option should be excluded from {{.available_showrooms}} list here]
 say:
 "हमारे पास {{.available_showrooms}} locations उपलब्ध हैं, आप अपनी test ride के लिए इनमें से कौन सी select करना चाहेंगे?"
 (wait for user response)
 if the user selects one showroom from the {{.available_showrooms}}, store the showroom name in {{.user_showroom_name}} and STRICTLY GO TO STEP 8.
 if the user wants something apart from the {{.available_showrooms}}: STRICTLY GO TO STEP 7.1.
+
+	STEP 7.2: HOME TEST RIDE OPTION
+	say:
+	"हमारे पास home test ride की सुविधा भी उपलब्ध है, क्या आप घर पर test ride लेना चाहेंगे?"
+	(wait for user response)
+	if the user says yes: store "home_test" in {{.user_showroom_name}} and STRICTLY GO TO STEP 8.
+	if the user says no: filter out home_test option from {{.available_showrooms}} and STRICTLY GO TO STEP 7.
 
 	STEP 7.1: HANDLING UNAVAILABLE SHOWROOM SELECTION
 	say:

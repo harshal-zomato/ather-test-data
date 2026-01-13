@@ -84,6 +84,24 @@ app.post('/compare-dates', (req, res) => {
     }
 });
 
+// API to check home test availability for a given pincode
+// Returns 1 if home test is available, 0 if not available
+app.get('/check_home_test', (req, res) => {
+    const pincode = req.query.pincode;
+    
+    if (!pincode) {
+        return res.status(400).json({ error: 'Pincode is required as query parameter' });
+    }
+    
+    // List of pincodes that have home test availability
+    const homeTestAvailablePincodes = ['110001', '560001'];
+    
+    // Check if the provided pincode has home test availability
+    const result = homeTestAvailablePincodes.includes(pincode) ? 1 : 0;
+    
+    res.json({ result });
+});
+
 // Wrapper function to format showroom names
 function formatShowroomNames(showroomsList) {
     return showroomsList.map(showroom => showroom.name).join(', ');
