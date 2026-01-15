@@ -46,7 +46,11 @@ app.get('/showrooms/:pin', (req, res) => {
     const pin = req.params.pin;
     const filteredShowrooms = showrooms.filter(showroom => showroom.pincode === pin);
     
-    // Always return a JSON array, even if empty
+    // Check if no showrooms found for the pincode
+    if (filteredShowrooms.length === 0) {
+        return res.send("Invalid pincode: we do not serve this pincode, can you please provide me with another one");
+    }
+    
     res.send(formatShowroomNames(filteredShowrooms));
 });
 
